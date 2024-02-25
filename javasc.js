@@ -2,16 +2,25 @@ const info= {
     elementID: "",
     position: 0,
     color: "",
-    subGridCount : document.getElementById("mainGridId").childElementCount
+    subGridCount : document.getElementById("mainGridId").childElementCount,
+    count: 0
 }
-const contageous = (elementID)=>
+let timeId = 0;
+const contageous = (elementID)=>//
 {
-    info.position = elementID;
-    info.elementID = elementID;
-    setColor();
-    transition();
+    if (info.count > 1 && elementID === info.elementID)
+        clearInterval(timeId);
+    else
+    {
+        info.position = elementID;
+        info.elementID = elementID;
+        info.count++;
+        setColor();
+        transition();
+        info.count++;
+    }
 }
-const setColor =() =>
+const setColor =() =>// generate a randomized color
 {
     const randomColor = Math.floor(Math.random()*16777215).toString(16);
     info.color = "#" + randomColor;
@@ -19,24 +28,24 @@ const setColor =() =>
     document.getElementById("title").style.color = info.color;
     
 }
-
-const transitionStep =() =>
+const transitionStep =() => // will transition and color the next grid
 {
     if (info.position > info.subGridCount)
          info.position = 1;
     if (info.position === parseInt(info.elementID))
-        return;
+        {
+            setColor();
+        }
     const y = info.position.toString();
     document.getElementById(y).style.backgroundColor = info.color;
     info.position++;
+        
 }
 
-const transition = () =>
+const transition = () => // set up the start of transition
 {
     info.position = parseInt(info.elementID) + 1;
-    const time = 200;
-    let id = setInterval(transitionStep,time);
-    setTimeout(() => {
-        clearInterval(id);
-    }, time * 9);
+    const time = 1000;
+    clearInterval(timeId);
+    timeId = setInterval(transitionStep,time);
 }
